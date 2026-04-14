@@ -1,7 +1,12 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import Image from "next/image";
 import { Monogram } from "@/components/Monogram";
 
@@ -9,46 +14,62 @@ import { Monogram } from "@/components/Monogram";
  * ScrollStory – úvodní scroll-driven příběh (4 kapitoly).
  *
  * Technika:
- *  - kontejner `h-[400vh]` s vnitřním `sticky top-0 h-screen`
- *  - framer-motion `useScroll` + `useTransform` mapuje progress na opacity/translateY/scale
- *  - každá kapitola má vlastní okno progressu (0–0.25, 0.25–0.5, …)
- *  - respektuje `prefers-reduced-motion` → fallback na statickou úvodní sekci
+ *  - kontejner h-[400vh] s vnitřním sticky top-0 h-screen
+ *  - framer-motion useScroll + useTransform → GPU opacity/scale
+ *  - žádný mounted state → žádný layout jump při hydrataci
+ *  - kapitola 1 začíná viditelná (opacity 1), crossfade do dalších
+ *  - prefers-reduced-motion → statický fallback (== true, ne null)
  */
 export function ScrollStory() {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Kapitola 1: 0 – 0.25
-  const c1Opacity = useTransform(scrollYProgress, [0, 0.05, 0.22, 0.28], [0, 1, 1, 0]);
-  const c1Y = useTransform(scrollYProgress, [0, 0.25], [0, -40]);
-  const monogramScale = useTransform(scrollYProgress, [0, 0.15], [0.85, 1]);
+  // ── Kapitola 1: 0 → 0.25 ───────────────────────────────
+  // Začíná plně viditelná, crossfade ven 22–30 %
+  const c1Opacity = useTransform(
+    scrollYProgress,
+    [0, 0.22, 0.30],
+    [1, 1, 0]
+  );
+  const c1Y = useTransform(scrollYProgress, [0, 0.30], [0, -24]);
+  const monogramScale = useTransform(scrollYProgress, [0, 0.22], [0.92, 1]);
 
-  // Kapitola 2: 0.25 – 0.5
-  const c2Opacity = useTransform(scrollYProgress, [0.22, 0.3, 0.47, 0.53], [0, 1, 1, 0]);
-  const c2ImgScale = useTransform(scrollYProgress, [0.22, 0.5], [1.15, 1]);
+  // ── Kapitola 2: 0.22–0.50 ───────────────────────────────
+  const c2Opacity = useTransform(
+    scrollYProgress,
+    [0.22, 0.30, 0.45, 0.53],
+    [0, 1, 1, 0]
+  );
+  const c2ImgScale = useTransform(scrollYProgress, [0.22, 0.53], [1.07, 1]);
 
-  // Kapitola 3: 0.5 – 0.75
-  const c3Opacity = useTransform(scrollYProgress, [0.47, 0.55, 0.72, 0.78], [0, 1, 1, 0]);
-  const c3ImgScale = useTransform(scrollYProgress, [0.47, 0.75], [1.1, 1]);
+  // ── Kapitola 3: 0.45–0.75 ───────────────────────────────
+  const c3Opacity = useTransform(
+    scrollYProgress,
+    [0.45, 0.53, 0.70, 0.78],
+    [0, 1, 1, 0]
+  );
+  const c3ImgScale = useTransform(scrollYProgress, [0.45, 0.78], [1.06, 1]);
 
-  // Kapitola 4: 0.75 – 1
-  const c4Opacity = useTransform(scrollYProgress, [0.72, 0.82, 1], [0, 1, 1]);
-  const c4Y = useTransform(scrollYProgress, [0.8, 1], [30, 0]);
+  // ── Kapitola 4: 0.70–1.00 ───────────────────────────────
+  const c4Opacity = useTransform(
+    scrollYProgress,
+    [0.70, 0.80, 1],
+    [0, 1, 1]
+  );
+  const c4Y = useTransform(scrollYProgress, [0.70, 1], [28, 0]);
 
-  // Fallback pro reduced-motion
-  if (prefersReducedMotion || (mounted === false)) {
+  // Fallback – prefers-reduced-motion (pouze true, ne null = SSR default)
+  if (prefersReducedMotion === true) {
     return (
-      <section className="relative min-h-screen bg-emerald-deep flex items-center justify-center text-ivory py-24 px-6">
+      <section
+        className="relative min-h-screen bg-emerald-deep flex items-center justify-center text-ivory py-24 px-6"
+        aria-label="Úvodní sekce"
+      >
         <div className="text-center max-w-3xl">
           <Monogram size={72} color="#C9A961" className="mx-auto mb-10 opacity-90" />
           <p className="eyebrow-light mb-6">Atelier Praha</p>
@@ -68,14 +89,15 @@ export function ScrollStory() {
   return (
     <section
       ref={containerRef}
-      className="relative h-[400vh] bg-emerald-deep"
+      className="relative h-[400vh]"
       aria-label="Úvodní příběh květinového atelieru"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-emerald-deep">
+
         {/* ── Kapitola 01: Ticho před kyticí ─────────────── */}
         <motion.div
-          style={{ opacity: c1Opacity, y: c1Y }}
-          className="absolute inset-0 bg-emerald-deep flex items-center justify-center px-6"
+          style={{ opacity: c1Opacity, y: c1Y, willChange: "opacity, transform" }}
+          className="absolute inset-0 flex items-center justify-center px-6"
         >
           <div className="text-center">
             <motion.div style={{ scale: monogramScale }}>
@@ -93,12 +115,12 @@ export function ScrollStory() {
 
         {/* ── Kapitola 02: Patnáct let praxe ──────────────── */}
         <motion.div
-          style={{ opacity: c2Opacity }}
+          style={{ opacity: c2Opacity, willChange: "opacity" }}
           className="absolute inset-0"
         >
           <motion.div
-            style={{ scale: c2ImgScale }}
-            className="absolute inset-0"
+            style={{ scale: c2ImgScale, willChange: "transform" }}
+            className="absolute inset-0 origin-center"
           >
             <Image
               src="/images/produkt-pivonky.jpg"
@@ -125,12 +147,12 @@ export function ScrollStory() {
 
         {/* ── Kapitola 03: Konečně tady ──────────────────── */}
         <motion.div
-          style={{ opacity: c3Opacity }}
+          style={{ opacity: c3Opacity, willChange: "opacity" }}
           className="absolute inset-0"
         >
           <motion.div
-            style={{ scale: c3ImgScale }}
-            className="absolute inset-0"
+            style={{ scale: c3ImgScale, willChange: "transform" }}
+            className="absolute inset-0 origin-center"
           >
             <Image
               src="/images/prodejna-muzeum.jpg"
@@ -156,7 +178,7 @@ export function ScrollStory() {
 
         {/* ── Kapitola 04: Finální claim ─────────────────── */}
         <motion.div
-          style={{ opacity: c4Opacity, y: c4Y }}
+          style={{ opacity: c4Opacity, y: c4Y, willChange: "opacity, transform" }}
           className="absolute inset-0 bg-emerald-deep flex items-center justify-center px-6"
         >
           <div className="text-center">
@@ -176,6 +198,7 @@ export function ScrollStory() {
             </p>
           </div>
         </motion.div>
+
       </div>
     </section>
   );
