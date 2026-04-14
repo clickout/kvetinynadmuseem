@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogoIcon } from "@/components/LogoIcon";
+import { LogoMark } from "@/components/LogoMark";
 
 const NAV_LINKS = [
   { href: "/obchod", label: "Obchod" },
@@ -62,8 +62,8 @@ export function Header() {
             className="flex items-center gap-3 group"
             aria-label="Květiny nad Museem – domovská stránka"
           >
-            <LogoIcon
-              size={44}
+            <LogoMark
+              size={48}
               color={logoColor}
               className="transition-all duration-500 flex-shrink-0"
             />

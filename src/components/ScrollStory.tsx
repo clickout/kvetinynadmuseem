@@ -7,22 +7,22 @@ import {
   useTransform,
   useReducedMotion,
 } from "framer-motion";
-import Image from "next/image";
-import { Monogram } from "@/components/Monogram";
+import { LogoMark } from "@/components/LogoMark";
 
 /**
- * ScrollStory – úvodní scroll-driven příběh (4 kapitoly).
+ * ScrollStory – úvodní scroll-driven portál.
  *
- * Klíčový princip: kapitoly se NEPŘEKRÝVAJÍ.
- * Každá kapitola nejprve zcela zmizí (opacity 0) → krátká pauza
- * v čistém emerald pozadí → teprve pak nastupuje další.
- * Tím se eliminuje "double exposure" efekt překrývajících se textů.
+ * Klíčový princip: JEDNO logo se od začátku do konce spojitě zvětšuje.
+ * Transform-origin je umístěn do středu prostředního oblouku (50 %, 78 %),
+ * takže na konci scrollu "vstupujeme" tímto obloukem dovnitř.
+ * Přes logo se vrství tři krátké textové kapitoly (sekvenční fade –
+ * NEPŘEKRÝVAJÍ se, aby se eliminoval double-exposure na diakritice).
  *
  * Timeline (scrollYProgress 0–1):
- *   Ch1  viditelná  0.00–0.20  fade out  0.20–0.27
- *   Ch2  fade in    0.28–0.35  hold      0.35–0.48  fade out  0.48–0.55
- *   Ch3  fade in    0.56–0.63  hold      0.63–0.74  fade out  0.74–0.81
- *   Ch4  fade in    0.82–0.90  hold      0.90–1.00
+ *   logoScale   0.50 → 16.00  (kontinuální)
+ *   Ch1  viditelná  0.00–0.20   fade out  0.20–0.26
+ *   Ch2  fade in    0.30–0.38   hold      0.38–0.58   fade out 0.58–0.66
+ *   Ch3  fade in    0.70–0.78   hold      0.78–0.95   fade out 0.95–1.00
  */
 export function ScrollStory() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,41 +33,23 @@ export function ScrollStory() {
     offset: ["start start", "end end"],
   });
 
-  // ── Kapitola 1 ──────────────────────────────────────────
-  const c1Opacity = useTransform(
-    scrollYProgress,
-    [0, 0.20, 0.27],
-    [1, 1, 0]
-  );
-  const c1Y = useTransform(scrollYProgress, [0.18, 0.27], [0, -20]);
-  const monogramScale = useTransform(scrollYProgress, [0, 0.20], [0.94, 1]);
+  // ── Kontinuální zoom do prostředního oblouku ─────────────
+  const logoScale = useTransform(scrollYProgress, [0, 1], [0.5, 16]);
 
-  // ── Kapitola 2 ──────────────────────────────────────────
+  // ── Textové kapitoly (sekvenční, bez překryvu) ───────────
+  const c1Opacity = useTransform(scrollYProgress, [0, 0.18, 0.26], [1, 1, 0]);
   const c2Opacity = useTransform(
     scrollYProgress,
-    [0.28, 0.35, 0.48, 0.55],
+    [0.30, 0.38, 0.58, 0.66],
     [0, 1, 1, 0]
   );
-  // kenburns: pomalý zoom-out po dobu viditelnosti
-  const c2ImgScale = useTransform(scrollYProgress, [0.28, 0.55], [1.06, 1.0]);
-
-  // ── Kapitola 3 ──────────────────────────────────────────
   const c3Opacity = useTransform(
     scrollYProgress,
-    [0.56, 0.63, 0.74, 0.81],
+    [0.70, 0.78, 0.95, 1],
     [0, 1, 1, 0]
   );
-  const c3ImgScale = useTransform(scrollYProgress, [0.56, 0.81], [1.05, 1.0]);
 
-  // ── Kapitola 4 ──────────────────────────────────────────
-  const c4Opacity = useTransform(
-    scrollYProgress,
-    [0.82, 0.90, 1],
-    [0, 1, 1]
-  );
-  const c4Y = useTransform(scrollYProgress, [0.82, 0.96], [22, 0]);
-
-  // ── Fallback prefers-reduced-motion ─────────────────────
+  // ── Fallback prefers-reduced-motion ──────────────────────
   if (prefersReducedMotion === true) {
     return (
       <section
@@ -75,7 +57,7 @@ export function ScrollStory() {
         aria-label="Úvodní sekce"
       >
         <div className="text-center max-w-3xl">
-          <Monogram size={72} color="#C9A961" className="mx-auto mb-10 opacity-90" />
+          <LogoMark size={200} color="#C9A961" className="mx-auto mb-10" />
           <p className="eyebrow-light mb-6">Atelier Praha</p>
           <h1 className="font-display font-light text-5xl md:text-7xl leading-[1.05] tracking-tight mb-8">
             Květinový atelier
@@ -96,117 +78,76 @@ export function ScrollStory() {
       className="relative h-[400vh]"
       aria-label="Úvodní příběh atelieru"
     >
-      {/* Sticky viewport — všechny kapitoly jsou zde jako absolute vrstvy */}
+      {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-emerald-deep">
 
-        {/* ── Kapitola 01: Ticho před kyticí ─────────────── */}
+        {/* ── Kontinuálně zoomující logo ──────────────────── */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <motion.div
+            aria-hidden="true"
+            className="will-change-transform"
+            style={{
+              // Logo-div má aspekt 472:862 a základní výšku 70vh.
+              // Posuneme jej nahoru o 28 % své výšky, aby bod (50 %, 78 %) —
+              // střed prostředního oblouku — ležel v geometrickém středu viewportu.
+              // Transform-origin: 50 % 78 %. Při zvětšení tedy oblouk zůstává
+              // pevně ukotvený a všechno ostatní roste směrem ven.
+              height: "70vh",
+              width: "calc(70vh * 472 / 862)",
+              backgroundColor: "#C9A961",
+              WebkitMaskImage: "url('/images/logo_faithful.png')",
+              maskImage: "url('/images/logo_faithful.png')",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              transformOrigin: "50% 78%",
+              translateY: "-19.6vh",
+              scale: logoScale,
+            }}
+          />
+        </div>
+
+        {/* ── Kapitola 01 — Ticho před kyticí ─────────────── */}
         <motion.div
-          style={{ opacity: c1Opacity, y: c1Y, willChange: "opacity, transform" }}
-          className="absolute inset-0 flex items-center justify-center px-6"
+          style={{ opacity: c1Opacity, willChange: "opacity" }}
+          className="absolute inset-x-0 bottom-[10vh] flex flex-col items-center text-center px-6 pointer-events-none"
         >
-          <div className="text-center">
-            <motion.div style={{ scale: monogramScale }}>
-              <Monogram
-                size={96}
-                color="#C9A961"
-                className="mx-auto mb-12 opacity-90"
-              />
-            </motion.div>
-            <p className="eyebrow-light mb-8">Atelier Praha</p>
-            <h2 className="font-display font-light text-ivory text-5xl md:text-7xl lg:text-[7rem] leading-[1.02] tracking-tight">
-              Ticho před kyticí.
-            </h2>
-            <div className="mt-14 flex justify-center">
-              <span className="block w-24 h-px bg-gold-champagne opacity-70" />
-            </div>
-          </div>
+          <p className="eyebrow-light mb-4">Atelier Praha</p>
+          <h2 className="font-display font-light text-ivory text-3xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
+            Ticho před kyticí.
+          </h2>
+          <span className="mt-8 block w-16 h-px bg-gold-champagne/70" />
         </motion.div>
 
-        {/* ── Kapitola 02: Patnáct let praxe ──────────────── */}
+        {/* ── Kapitola 02 — Patnáct let praxe ─────────────── */}
         <motion.div
           style={{ opacity: c2Opacity, willChange: "opacity" }}
-          className="absolute inset-0"
+          className="absolute inset-x-0 bottom-[10vh] flex flex-col items-center text-center px-6 pointer-events-none"
         >
-          <motion.div
-            style={{ scale: c2ImgScale, willChange: "transform" }}
-            className="absolute inset-0 origin-center"
-          >
-            <Image
-              src="/images/produkt-pivonky.jpg"
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-emerald-deep/70 via-emerald-deep/50 to-emerald-deep/80" />
-          </motion.div>
-          <div className="relative h-full flex items-center justify-center px-6">
-            <div className="text-center max-w-4xl">
-              <p className="eyebrow-light mb-8">Řemeslo</p>
-              <h2 className="font-display font-light text-ivory text-4xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight">
-                Patnáct let praxe
-                <br />
-                <em className="not-italic italic text-gold-foil">pod cizím jménem.</em>
-              </h2>
-            </div>
-          </div>
+          <p className="eyebrow-light mb-4">Řemeslo</p>
+          <h2 className="font-display font-light text-ivory text-3xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight">
+            Patnáct let praxe
+            <br />
+            <em className="not-italic italic text-gold-foil">pod cizím jménem.</em>
+          </h2>
+          <span className="mt-8 block w-16 h-px bg-gold-champagne/70" />
         </motion.div>
 
-        {/* ── Kapitola 03: Konečně tady ──────────────────── */}
+        {/* ── Kapitola 03 — Naproti Museu ─────────────────── */}
         <motion.div
           style={{ opacity: c3Opacity, willChange: "opacity" }}
-          className="absolute inset-0"
+          className="absolute inset-x-0 bottom-[10vh] flex flex-col items-center text-center px-6 pointer-events-none"
         >
-          <motion.div
-            style={{ scale: c3ImgScale, willChange: "transform" }}
-            className="absolute inset-0 origin-center"
-          >
-            <Image
-              src="/images/prodejna-muzeum.jpg"
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-deep/90 via-emerald-deep/40 to-emerald-deep/60" />
-          </motion.div>
-          <div className="relative h-full flex items-end justify-center px-6 pb-28">
-            <div className="text-center max-w-4xl">
-              <p className="eyebrow-light mb-8">Vinohradská 6</p>
-              <h2 className="font-display font-light text-ivory text-4xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight">
-                Konečně tady.
-                <br />
-                <em className="not-italic italic text-gold-foil">Naproti Museu.</em>
-              </h2>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ── Kapitola 04: Finální claim ─────────────────── */}
-        <motion.div
-          style={{ opacity: c4Opacity, y: c4Y, willChange: "opacity, transform" }}
-          className="absolute inset-0 bg-emerald-deep flex items-center justify-center px-6"
-        >
-          <div className="text-center">
-            <p className="eyebrow-light mb-10">Od roku 2024</p>
-            <div
-              className="flex items-center justify-center gap-6 mb-10"
-              aria-hidden="true"
-            >
-              <span className="h-px w-16 md:w-24 bg-gold-champagne" />
-              <Monogram size={44} color="#C9A961" />
-              <span className="h-px w-16 md:w-24 bg-gold-champagne" />
-            </div>
-            <h2 className="font-display font-light text-ivory text-5xl md:text-7xl lg:text-[7rem] leading-[1.02] tracking-tight mb-10">
-              Květinový atelier
-              <br />
-              <em className="not-italic italic text-gold-foil">na Vinohradech.</em>
-            </h2>
-            <p className="text-ivory/50 text-xs uppercase tracking-[0.4em] mt-2">
-              ↓ pokračujte dál
-            </p>
-          </div>
+          <p className="eyebrow-light mb-4">Vinohradská 6 · Od roku 2024</p>
+          <h2 className="font-display font-light text-ivory text-3xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight">
+            Květinový atelier
+            <br />
+            <em className="not-italic italic text-gold-foil">naproti Museu.</em>
+          </h2>
+          <span className="mt-8 block w-16 h-px bg-gold-champagne/70" />
         </motion.div>
 
       </div>
