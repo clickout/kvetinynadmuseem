@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Lato, Great_Vibes } from "next/font/google";
+import { Cormorant_Garamond, Lato, Great_Vibes } from "next/font/google";
 import "./globals.css";
 
 /* ── Fonty ────────────────────────────────────────────────── */
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin", "latin-ext"],
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600"],
 });
 
 const lato = Lato({
@@ -28,19 +28,18 @@ const greatVibes = Great_Vibes({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kvetinynadmuseem.cz"),
   title: {
-    default: "Květiny nad Museem | Květinářství Praha Vinohrady | Rozvoz kytic",
-    template: "%s | Květiny nad Museem",
+    default: "Květiny nad Museem — Květinový atelier na Vinohradech",
+    template: "%s · Květiny nad Museem",
   },
   description:
-    "Čerstvé kytice s rozvozem po Praze. Dárkové kytice, smuteční vazby, svatební floristika. Vinohradská 6, naproti Národnímu muzeu.",
+    "Květinový atelier naproti Národnímu muzeu. Dárkové kytice, svatební a smuteční floristika, rozvoz po Praze. Vinohradská 6, Praha 2.",
   keywords: [
-    "květinářství Praha",
-    "kytice rozvoz Praha",
-    "Vinohrady květiny",
+    "květinový atelier Praha",
+    "květiny Vinohrady",
+    "rozvoz kytic Praha",
     "svatební floristika Praha",
     "smuteční vazby",
-    "dárkové kytice",
-    "pokojové rostliny Praha",
+    "luxusní kytice Praha",
   ],
   authors: [{ name: "Květiny nad Museem" }],
   creator: "Květiny nad Museem",
@@ -55,23 +54,23 @@ export const metadata: Metadata = {
     locale: "cs_CZ",
     url: "https://kvetinynadmuseem.cz",
     siteName: "Květiny nad Museem",
-    title: "Květiny nad Museem | Čerstvé kytice s rozvozem po Praze",
+    title: "Květiny nad Museem — Květinový atelier na Vinohradech",
     description:
-      "Čerstvé kytice s rozvozem po Praze. Dárkové kytice, smuteční vazby, svatební floristika. Naproti Národnímu muzeu.",
+      "Květinový atelier naproti Národnímu muzeu. Dárkové kytice, svatební a smuteční floristika, rozvoz po Praze.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Květiny nad Museem – Výloha květinářství s pohledem na Národní muzeum",
+        alt: "Květiny nad Museem — Atelier Vinohradská 6, naproti Národnímu muzeu",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Květiny nad Museem | Čerstvé kytice Praha",
+    title: "Květiny nad Museem — Atelier Vinohrady",
     description:
-      "Čerstvé kytice s rozvozem po Praze. Dárkové kytice, smuteční vazby, svatební floristika.",
+      "Květinový atelier naproti Národnímu muzeu. Rozvoz po Praze.",
     images: ["/og-image.jpg"],
   },
   alternates: {
@@ -86,9 +85,9 @@ export default function RootLayout({
   return (
     <html
       lang="cs"
-      className={`${playfair.variable} ${lato.variable} ${greatVibes.variable} h-full`}
+      className={`${cormorant.variable} ${lato.variable} ${greatVibes.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-[#F7F5F0] font-[family-name:var(--font-lato)]">
+      <body className="min-h-full flex flex-col bg-ivory text-charcoal font-body font-light">
         {children}
       </body>
     </html>

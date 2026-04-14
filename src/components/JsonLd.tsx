@@ -10,12 +10,12 @@ export function JsonLd() {
     name: "Květiny nad Museem",
     alternateName: "Kvetiny nad Museem",
     description:
-      "Čerstvé kytice s rozvozem po Praze. Dárkové kytice, smuteční vazby, svatební floristika. Naproti Národnímu muzeu.",
+      "Květinový atelier naproti Národnímu muzeu. Dárkové kytice, svatební a smuteční floristika, rozvoz po Praze. Patnáct let praxe pod vlastní značkou od roku 2024.",
     url: "https://kvetinynadmuseem.cz",
     telephone: "+420 XXX XXX XXX",
     email: "info@kvetinynadmuseem.cz",
-    foundingDate: "2010",
-    priceRange: "€€",
+    foundingDate: "2024",
+    priceRange: "€€€",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Vinohradská 6",
@@ -33,13 +33,13 @@ export function JsonLd() {
       {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "08:00",
+        opens: "09:00",
         closes: "19:00",
       },
       {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: "Saturday",
-        opens: "09:00",
+        opens: "10:00",
         closes: "17:00",
       },
       {

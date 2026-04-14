@@ -4,52 +4,51 @@ import Image from "next/image";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AnimateIn } from "@/components/AnimateIn";
+import { PageHero } from "@/components/PageHero";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Obchod | Kytice, rostliny a smuteční vazby",
-  description: "Prohlédněte si celý sortiment Květiny nad Museem – dárkové kytice, smuteční vazby, pokojové rostliny a svatební floristika.",
+  title: "Obchod | Květiny nad Museem",
+  description:
+    "Sezonní kytice, pokojové rostliny, smuteční vazby a svatební floristika — vše z atelieru naproti Národnímu muzeu.",
 };
 
 const SHOP_CATEGORIES = [
   {
+    number: "01",
     title: "Dárkové kytice",
-    desc: "Čerstvé sezónní bouquety pro každou příležitost. Rozvoz do 3 hodin.",
+    desc: "Sezonní kompozice vázané po jedné. Čerstvé květy, krabička nebo kraft papír.",
     href: "/obchod/darkove-kytice",
     image: "/images/kategorie-darkove-kytice.jpg",
-    alt: "Dárkové kytice",
-    color: "from-rose-900/50 to-[#2D5016]/70",
-    count: "6 variant",
-    cta: "Vybrat kytici",
+    alt: "Sezonní dárková kytice",
+    meta: "6 signature kompozic",
   },
   {
+    number: "02",
     title: "Smuteční vazby",
-    desc: "Věnce, pietní kytice a aranžmá. Diskrétní servis, rozvoz na pohřební ústavy.",
+    desc: "Věnce a pietní aranžmá s důstojností, jakou okamžik žádá. Rozvoz na pražské obřadní síně.",
     href: "/obchod/smutecni-vazby",
     image: "/images/kategorie-smutecni.jpg",
-    alt: "Smuteční vazby",
-    color: "from-gray-800/60 to-gray-600/50",
-    count: "6 variant",
-    cta: "Prohlédnout",
+    alt: "Bílá smuteční vazba",
+    meta: "6 vazeb + zakázky",
   },
   {
+    number: "03",
     title: "Pokojové rostliny",
-    desc: "Orchideje, monstery, sukulenty. Ideální dárek i dekorace interiéru.",
+    desc: "Vybrané druhy pro pražské byty. Od monstery přes olivovník po vzácné calathey.",
     href: "/obchod/pokojove-rostliny",
     image: "/images/kategorie-rostliny.jpg",
-    alt: "Pokojové rostliny",
-    color: "from-[#1e3610]/70 to-[#2D5016]/50",
-    count: "6 druhů",
-    cta: "Vybrat rostlinu",
+    alt: "Pokojová rostlina v keramice",
+    meta: "6 druhů v nabídce",
   },
   {
-    title: "Svatební floristika",
-    desc: "Kompletní svatební servis od Adély. Konzultace zdarma.",
+    number: "04",
+    title: "Svatby",
+    desc: "Kompletní floristika — od kytice nevěsty až po odvoz kytic ze sálu. Konzultace v atelieru.",
     href: "/svatby",
     image: "/images/kategorie-svatby.jpg",
-    alt: "Svatby",
-    color: "from-rose-800/60 to-[#8B6914]/50",
-    count: "Konzultace zdarma",
-    cta: "Zjistit více",
+    alt: "Svatební kytice z pivoněk",
+    meta: "Tři balíčky · konzultace",
   },
 ] as const;
 
@@ -58,60 +57,69 @@ export default function ObchodPage() {
     <>
       <Header />
       <main id="main-content">
+        <PageHero
+          number="02"
+          eyebrow="Nabídka"
+          title="Náš obchod"
+          subtitle="Čtyři kapitoly jednoho řemesla. Každá zakázka je vázaná po jedné v atelieru na Vinohradské 6."
+        />
 
-        {/* Header */}
-        <div className="pt-16 md:pt-20 bg-[#F7F5F0]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            <AnimateIn animation="fade-up">
-              <p className="text-[#8B6914] text-sm font-semibold uppercase tracking-widest mb-3">Vše od Adély</p>
-              <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-bold text-[#2D5016] mb-4">
-                Náš obchod
-              </h1>
-              <p className="text-gray-600 text-base md:text-lg max-w-xl leading-relaxed">
-                Čerstvé kytice, pokojové rostliny, smuteční vazby a svatební floristika –
-                vše s osobním přístupem a láskou k řemeslu.
-              </p>
-            </AnimateIn>
-          </div>
-        </div>
+        <section className="bg-ivory pb-24 md:pb-32" aria-labelledby="shop-heading">
+          <div className="max-w-7xl mx-auto px-6 lg:px-10">
+            <div className="mb-10">
+              <Breadcrumbs
+                items={[
+                  { href: "/", label: "Domů" },
+                  { label: "Obchod" },
+                ]}
+              />
+            </div>
 
-        {/* Kategorie karty */}
-        <section className="bg-[#F7F5F0] pb-16 md:pb-24" aria-labelledby="shop-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 id="shop-heading" className="sr-only">Kategorie produktů</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+            <h2 id="shop-heading" className="sr-only">
+              Kategorie
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
               {SHOP_CATEGORIES.map((cat, i) => (
-                <AnimateIn key={cat.href} animation="fade-up" delay={i * 100}>
+                <AnimateIn key={cat.href} animation="fade-up" delay={i * 100} duration={800}>
                   <Link
                     href={cat.href}
-                    className="group block rounded-2xl overflow-hidden relative shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                    className="group block"
                     aria-label={`${cat.title} – ${cat.desc}`}
                   >
-                    <div className="relative aspect-[3/2] overflow-hidden bg-gray-200">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-bone">
                       <Image
                         src={cat.image}
                         alt={cat.alt}
                         fill
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04]"
                       />
-                      <div aria-hidden="true" className={`absolute inset-0 bg-gradient-to-t ${cat.color}`} />
-                      {/* Fallback */}
-                      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-br from-[#2D5016]/40 to-[#8B6914]/20" />
-                    </div>
-                    {/* Text overlay */}
-                    <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                      <span className="text-xs font-semibold bg-white/20 px-2.5 py-1 rounded-full w-fit mb-3">
-                        {cat.count}
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 bg-emerald-deep/0 group-hover:bg-emerald-deep/20 transition-colors duration-500"
+                      />
+                      <span className="absolute top-6 left-6 font-display text-3xl md:text-4xl text-gold-foil">
+                        {cat.number}
                       </span>
-                      <h3 className="font-[family-name:var(--font-playfair)] text-2xl font-bold mb-1">{cat.title}</h3>
-                      <p className="text-white/75 text-sm leading-relaxed mb-3 max-w-xs">{cat.desc}</p>
-                      <span className="inline-flex items-center gap-2 text-white text-sm font-semibold group-hover:gap-3 transition-all">
-                        {cat.cta}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <line x1="5" y1="12" x2="19" y2="12" />
-                          <polyline points="12 5 19 12 12 19" />
-                        </svg>
+                    </div>
+
+                    <div className="pt-6 border-b border-gold-champagne/30 group-hover:border-emerald-deep transition-colors pb-6">
+                      <p className="text-[0.7rem] uppercase tracking-[0.3em] text-gold-deep mb-3">
+                        {cat.meta}
+                      </p>
+                      <h3 className="font-display font-light text-2xl md:text-3xl text-charcoal group-hover:text-emerald-deep transition-colors mb-3">
+                        {cat.title}
+                      </h3>
+                      <p className="text-graphite text-sm md:text-base leading-relaxed max-w-md mb-4">
+                        {cat.desc}
+                      </p>
+                      <span className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-gold-deep group-hover:text-emerald-deep transition-colors">
+                        Prohlédnout
+                        <span
+                          aria-hidden="true"
+                          className="block w-8 h-px bg-current transition-all duration-300 group-hover:w-14"
+                        />
                       </span>
                     </div>
                   </Link>
@@ -119,23 +127,31 @@ export default function ObchodPage() {
               ))}
             </div>
 
-            {/* Rozvoz banner */}
-            <AnimateIn animation="fade-up" delay={200} className="mt-12">
-              <div className="bg-[#2D5016] rounded-2xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-5">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/15 rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-                    </svg>
+            {/* Rozvoz & Kontakt blok */}
+            <AnimateIn animation="fade-up" delay={200} className="mt-24">
+              <div className="bg-emerald-deep text-ivory p-10 md:p-16">
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center">
+                  <div className="max-w-xl">
+                    <p className="text-xs uppercase tracking-[0.3em] text-gold-champagne mb-4">
+                      Rozvoz · Praha
+                    </p>
+                    <p className="font-display font-light text-2xl md:text-3xl text-ivory leading-snug">
+                      Doručíme po celé Praze —
+                      <br />
+                      <span className="italic text-gold-foil">nebo vás rádi vidíme v atelieru.</span>
+                    </p>
                   </div>
-                  <div>
-                    <p className="font-bold text-white text-base">Rozvoz po celé Praze</p>
-                    <p className="text-white/70 text-sm">Doručení do 3 hodin od objednávky · Poplatek od 99 Kč</p>
-                  </div>
+                  <Link
+                    href="/rozvoz"
+                    className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-gold-champagne hover:text-gold-foil group whitespace-nowrap"
+                  >
+                    Podmínky rozvozu
+                    <span
+                      aria-hidden="true"
+                      className="block w-10 h-px bg-current transition-all duration-300 group-hover:w-16"
+                    />
+                  </Link>
                 </div>
-                <Link href="/rozvoz" className="flex-shrink-0 px-5 py-2.5 bg-white text-[#2D5016] font-semibold text-sm rounded-full hover:bg-gray-100 transition-colors">
-                  Podmínky rozvozu
-                </Link>
               </div>
             </AnimateIn>
           </div>

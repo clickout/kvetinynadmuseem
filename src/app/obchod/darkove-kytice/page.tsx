@@ -4,11 +4,14 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
 import { AnimateIn } from "@/components/AnimateIn";
+import { PageHero } from "@/components/PageHero";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { DARKOVE_KYTICE } from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "Dárkové kytice Praha | Rozvoz do 3 hodin",
-  description: "Čerstvé dárkové kytice z Prahy Vinohrad. Narozeninové, romantické i sezónní bouquety s rozvozem po Praze. Objednejte online.",
+  title: "Dárkové kytice | Květiny nad Museem",
+  description:
+    "Sezonní dárkové kytice z atelieru na Vinohradské 6. Vázané po jedné, rozvoz po Praze.",
 };
 
 export default function DarkoveKyticePage() {
@@ -16,94 +19,70 @@ export default function DarkoveKyticePage() {
     <>
       <Header />
       <main id="main-content">
+        <PageHero
+          number="02·1"
+          eyebrow="Dárkové kytice"
+          title="Kytice pro okamžik."
+          subtitle="Sezonní kompozice vázané po jedné. Ze sezóny, ze zahrad a z ranního trhu."
+        />
 
-        {/* ── Hero banner kategorie ─────────────────────────── */}
-        <div className="relative pt-16 md:pt-20 bg-gradient-to-br from-[#2D5016] to-[#1e3610] text-white overflow-hidden">
-          <div aria-hidden="true" className="absolute inset-0 opacity-10">
-            {/* Dekorativní pattern */}
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute text-6xl select-none"
-                style={{
-                  left: `${(i * 17) % 100}%`,
-                  top: `${(i * 23) % 100}%`,
-                  transform: `rotate(${i * 18}deg)`,
-                  opacity: 0.3,
-                }}
-                aria-hidden="true"
+        <section
+          aria-labelledby="products-heading"
+          className="bg-ivory pb-24 md:pb-32"
+        >
+          <div className="max-w-7xl mx-auto px-6 lg:px-10">
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+              <Breadcrumbs
+                items={[
+                  { href: "/", label: "Domů" },
+                  { href: "/obchod", label: "Obchod" },
+                  { label: "Dárkové kytice" },
+                ]}
+              />
+              <h2
+                id="products-heading"
+                className="text-xs uppercase tracking-[0.3em] text-gold-deep"
               >
-                🌸
-              </div>
-            ))}
-          </div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-            {/* Drobečková navigace */}
-            <nav aria-label="Drobečková navigace" className="mb-6">
-              <ol className="flex items-center gap-2 text-sm text-white/60">
-                <li><Link href="/" className="hover:text-white transition-colors">Domů</Link></li>
-                <li aria-hidden="true">/</li>
-                <li><Link href="/obchod" className="hover:text-white transition-colors">Obchod</Link></li>
-                <li aria-hidden="true">/</li>
-                <li className="text-white">Dárkové kytice</li>
-              </ol>
-            </nav>
-            <div className="max-w-2xl">
-              <p className="text-[#e8c96a] text-sm font-semibold uppercase tracking-widest mb-3">💐 Dárkové kytice</p>
-              <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-                Kytice, která řekne <span className="italic">vše</span>
-              </h1>
-              <p className="text-white/80 text-base md:text-lg leading-relaxed mb-6">
-                Čerstvé kytice sestavované každý den z nejlepšího dostupného květu.
-                Rozvoz po celé Praze do 3 hodin, osobní odběr kdykoliv.
-              </p>
-              <div className="flex flex-wrap gap-3 text-sm">
-                {["🚚 Rozvoz do 3 hodin", "✂️ Čerstvé každý den", "🎁 Krásné balení zdarma"].map((item) => (
-                  <span key={item} className="bg-white/15 border border-white/25 px-3 py-1.5 rounded-full">{item}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-          {/* Vlna */}
-          <div aria-hidden="true" className="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 48" fill="none" preserveAspectRatio="none" className="w-full h-8 md:h-12">
-              <path d="M0 48V24C360 0 720 48 1080 24C1260 12 1380 36 1440 24V48H0Z" fill="#F7F5F0" />
-            </svg>
-          </div>
-        </div>
-
-        {/* ── Grid produktů ─────────────────────────────────── */}
-        <section className="bg-[#F7F5F0] py-12 md:py-16" aria-labelledby="products-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-8">
-              <h2 id="products-heading" className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-[#2D5016]">
-                {DARKOVE_KYTICE.length} kytic k výběru
+                {DARKOVE_KYTICE.length} kompozic
               </h2>
-              <p className="text-gray-500 text-sm">
-                Nenašli jste? <Link href="/kontakt" className="text-[#2D5016] font-medium underline underline-offset-2">Napište nám</Link>
-              </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-14">
               {DARKOVE_KYTICE.map((product, i) => (
-                <AnimateIn key={product.id} animation="fade-up" delay={i * 80} duration={600}>
-                  <ProductCard product={product} />
+                <AnimateIn
+                  key={product.id}
+                  animation="fade-up"
+                  delay={i * 80}
+                  duration={700}
+                >
+                  <ProductCard product={product} index={i} />
                 </AnimateIn>
               ))}
             </div>
 
-            {/* CTA – objednávka na zakázku */}
+            {/* CTA — zakázka */}
             <AnimateIn animation="fade-up" delay={200}>
-              <div className="mt-12 rounded-2xl bg-[#2D5016] text-white p-8 text-center">
-                <p className="font-[family-name:var(--font-playfair)] text-2xl font-bold mb-2">Máte specifické přání?</p>
-                <p className="text-white/75 mb-5 max-w-lg mx-auto">
-                  Adéla vytvoří kytici přesně podle Vás – oblíbené barvy, sezónní i exotické druhy, jakákoliv příležitost.
+              <div className="mt-24 bg-emerald-deep text-ivory p-10 md:p-16 text-center max-w-4xl mx-auto">
+                <p className="text-xs uppercase tracking-[0.3em] text-gold-champagne mb-5">
+                  Na zakázku
+                </p>
+                <p className="font-display font-light text-2xl md:text-4xl text-ivory leading-[1.2] mb-8">
+                  Nenašli jste? Vážeme i{" "}
+                  <span className="italic text-gold-foil">podle představy</span>.
+                </p>
+                <p className="text-ivory/70 max-w-xl mx-auto mb-10 leading-relaxed">
+                  Napište nám barvu, náladu nebo konkrétní druh. Ozveme se do následujícího dne
+                  s návrhem a cenou.
                 </p>
                 <Link
                   href="/kontakt"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#2D5016] font-semibold rounded-full hover:bg-gray-100 transition-colors"
+                  className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-gold-foil hover:text-ivory transition-colors group"
                 >
-                  Objednat na zakázku
+                  Zeptat se v atelieru
+                  <span
+                    aria-hidden="true"
+                    className="block w-10 h-px bg-current transition-all duration-300 group-hover:w-16"
+                  />
                 </Link>
               </div>
             </AnimateIn>

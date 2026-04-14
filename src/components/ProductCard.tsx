@@ -11,57 +11,65 @@ export interface Product {
   badge?: string;
   slug: string;
   category: string;
+  /** Editorální kód produktu, např. „№ 042" */
+  code?: string;
 }
 
 interface ProductCardProps {
   product: Product;
+  /** Pořadí v mřížce — používá se pro automatický kód, pokud není `code`. */
+  index?: number;
 }
 
 /**
- * ProductCard – karta produktu sdílená napříč kategoriemi.
+ * ProductCard — luxury editorální karta. Zlatý produktový kód,
+ * serifní název, tenká spodní linka místo stínu.
  */
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, index }: ProductCardProps) {
+  const code =
+    product.code ??
+    `№ ${String((index ?? 0) + 1).padStart(3, "0")}`;
+
   return (
-    <article className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-      <Link href={`/obchod/${product.category}/${product.slug}`} className="block">
+    <article className="group">
+      <Link
+        href={`/obchod/${product.category}/${product.slug}`}
+        className="block"
+        aria-label={`${product.name} – detail`}
+      >
         {/* Obrázek */}
-        <div className="relative aspect-square overflow-hidden bg-gray-100">
+        <div className="relative aspect-[3/4] overflow-hidden bg-bone">
           <Image
             src={product.image}
             alt={product.alt}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 bg-gradient-to-br from-[#2D5016]/15 to-[#8B6914]/10"
+            className="object-cover transition-transform duration-[1200ms] group-hover:scale-[1.04]"
           />
           {product.badge && (
-            <span className="absolute top-3 left-3 bg-[#8B6914] text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+            <span className="absolute top-4 left-4 bg-ivory/95 text-emerald-deep text-[0.65rem] uppercase tracking-[0.25em] px-3 py-1">
               {product.badge}
             </span>
           )}
         </div>
 
         {/* Info */}
-        <div className="p-4">
-          <h3 className="font-[family-name:var(--font-playfair)] font-semibold text-[#2D5016] text-base mb-1 group-hover:text-[#3a6820] transition-colors line-clamp-1">
+        <div className="pt-5 pb-1 border-b border-gold-champagne/30 group-hover:border-emerald-deep transition-colors">
+          <p className="text-[0.7rem] uppercase tracking-[0.3em] text-gold-deep mb-2">
+            {code}
+          </p>
+          <h3 className="font-display font-light text-xl md:text-2xl text-charcoal group-hover:text-emerald-deep transition-colors leading-tight mb-2">
             {product.name}
           </h3>
-          <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2">
+          <p className="text-graphite text-sm leading-relaxed mb-4 line-clamp-2">
             {product.description}
           </p>
-          <div className="flex items-center justify-between">
-            <span className="font-bold text-[#2D5016] text-base">
+          <div className="flex items-baseline justify-between pb-4">
+            <span className="font-display text-lg text-emerald-deep">
               {product.price}
             </span>
-            <span className="text-[#2D5016] text-xs font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
-              Detail
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
+            <span className="text-[0.7rem] uppercase tracking-[0.25em] text-gold-deep group-hover:text-emerald-deep transition-colors">
+              Detail →
             </span>
           </div>
         </div>

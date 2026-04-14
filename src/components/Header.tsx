@@ -2,164 +2,185 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LogoIcon } from "@/components/LogoIcon";
 
 const NAV_LINKS = [
   { href: "/obchod", label: "Obchod" },
   { href: "/svatby", label: "Svatby" },
-  { href: "/doporuceni", label: "Doporučení" },
-  { href: "/o-nas", label: "O nás" },
+  { href: "/o-nas", label: "Atelier" },
+  { href: "/blog", label: "Deník" },
   { href: "/kontakt", label: "Kontakt" },
 ];
 
+/**
+ * Luxury header — minimalistická navigace, zlatá hairline pod headerem,
+ * barvy adaptují se podle scrollu (na homepage je úvodní ScrollStory tmavá).
+ */
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Na homepage je ScrollStory tmavá → transparentní header zpočátku.
+  // Na ostatních stránkách vždy "solidní" stav.
+  const isHome = pathname === "/";
+  const solidHeader = !isHome || isScrolled;
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isMenuOpen]);
+
+  const textColor = solidHeader ? "text-charcoal" : "text-ivory";
+  const logoColor = solidHeader ? "#0B3D2E" : "#F5F1E8";
+  const subtextColor = solidHeader ? "text-gold-deep" : "text-gold-champagne";
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        solidHeader
+          ? "bg-ivory/95 backdrop-blur-md border-b border-gold-champagne/30"
+          : "bg-transparent"
       }`}
       role="banner"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-
-          {/* ── LOGO ───────────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+        <div className="flex items-center justify-between h-20 md:h-24">
+          {/* ── Logo ─────────────────────────────────────── */}
           <Link
             href="/"
             className="flex items-center gap-3 group"
             aria-label="Květiny nad Museem – domovská stránka"
           >
-            {/* SVG ikona – pivoňka + muzeum */}
             <LogoIcon
-              size={52}
-              color={isScrolled ? "#2D5016" : "#ffffff"}
-              className="transition-all duration-300 flex-shrink-0"
+              size={44}
+              color={logoColor}
+              className="transition-all duration-500 flex-shrink-0"
             />
 
-            {/* Kaligrafický text */}
             <div className="flex flex-col leading-none">
               <span
-                className={`font-[family-name:var(--font-great-vibes)] text-[1.85rem] leading-[1.1] tracking-wide transition-colors duration-300 ${
-                  isScrolled ? "text-[#2D5016]" : "text-white"
-                }`}
+                className={`font-script text-[1.85rem] leading-[1.1] tracking-wide transition-colors duration-500 ${textColor}`}
               >
                 Květiny
               </span>
               <span
-                className={`font-[family-name:var(--font-great-vibes)] text-[1.25rem] leading-[1.1] tracking-wide transition-colors duration-300 ${
-                  isScrolled ? "text-[#8B6914]" : "text-white/80"
-                }`}
+                className={`font-script text-[1.1rem] leading-[1.1] tracking-wide transition-colors duration-500 ${subtextColor}`}
               >
                 nad museem
               </span>
             </div>
           </Link>
 
-          {/* ── Desktop navigace ───────────────────────────── */}
-          <nav aria-label="Hlavní navigace" className="hidden md:flex items-center gap-6 lg:gap-8">
+          {/* ── Desktop navigation ───────────────────────── */}
+          <nav
+            aria-label="Hlavní navigace"
+            className="hidden md:flex items-center gap-8 lg:gap-10"
+          >
             {NAV_LINKS.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
-                className={`text-sm font-medium transition-colors relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-0.5 after:bg-current after:transition-all hover:after:w-full ${
-                  isScrolled ? "text-gray-700 hover:text-[#2D5016]" : "text-white/90 hover:text-white"
+                className={`text-[0.78rem] uppercase tracking-[0.25em] font-medium link-underline transition-colors duration-300 ${
+                  solidHeader
+                    ? "text-charcoal hover:text-emerald-deep"
+                    : "text-ivory/90 hover:text-ivory"
                 }`}
               >
                 {label}
               </Link>
             ))}
-            <Link
-              href="/obchod"
-              className={`ml-2 px-5 py-2.5 font-semibold text-sm rounded-full transition-all duration-200 ${
-                isScrolled
-                  ? "bg-[#2D5016] text-white hover:bg-[#3a6820]"
-                  : "bg-white/20 backdrop-blur-sm border border-white/40 text-white hover:bg-white/30"
-              }`}
-            >
-              Objednat kytici
-            </Link>
           </nav>
 
-          {/* ── Hamburger ──────────────────────────────────── */}
+          {/* ── Hamburger ───────────────────────────────── */}
           <button
             type="button"
             aria-label={isMenuOpen ? "Zavřít menu" : "Otevřít menu"}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
             onClick={() => setIsMenuOpen((v) => !v)}
-            className={`md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded-lg transition-colors ${
-              isScrolled ? "text-[#2D5016]" : "text-white"
-            }`}
+            className={`md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 transition-colors ${textColor}`}
           >
-            <span className={`block w-6 h-0.5 bg-current transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`block w-6 h-0.5 bg-current transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-6 h-0.5 bg-current transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            <span
+              className={`block w-6 h-px bg-current transition-all duration-300 ${
+                isMenuOpen ? "rotate-45 translate-y-[6px]" : ""
+              }`}
+            />
+            <span
+              className={`block w-6 h-px bg-current transition-all duration-300 ${
+                isMenuOpen ? "opacity-0" : ""
+              }`}
+            />
+            <span
+              className={`block w-6 h-px bg-current transition-all duration-300 ${
+                isMenuOpen ? "-rotate-45 -translate-y-[6px]" : ""
+              }`}
+            />
           </button>
         </div>
       </div>
 
-      {/* ── Mobile drawer ──────────────────────────────────── */}
+      {/* ── Mobile drawer ──────────────────────────────── */}
       <div
         id="mobile-menu"
         role="dialog"
         aria-label="Mobilní navigace"
         aria-modal="true"
-        className={`md:hidden fixed inset-0 top-16 z-40 transition-all duration-300 ${
+        className={`md:hidden fixed inset-0 top-20 z-40 transition-all duration-300 ${
           isMenuOpen ? "visible opacity-100" : "invisible opacity-0"
         }`}
       >
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} aria-hidden="true" />
+        <div
+          className="absolute inset-0 bg-emerald-deep/50 backdrop-blur-sm"
+          onClick={() => setIsMenuOpen(false)}
+          aria-hidden="true"
+        />
         <nav
           aria-label="Mobilní navigace"
-          className={`absolute top-0 right-0 w-72 h-full bg-white shadow-2xl flex flex-col transition-transform duration-300 ${
+          className={`absolute top-0 right-0 w-full max-w-sm h-[calc(100vh-5rem)] bg-ivory shadow-2xl flex flex-col transition-transform duration-300 ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          {/* Logo v draweru */}
-          <div className="flex items-center gap-3 px-8 py-6 border-b border-gray-100">
-            <LogoIcon size={44} color="#2D5016" />
-            <div className="flex flex-col leading-none">
-              <span className="font-[family-name:var(--font-great-vibes)] text-[1.6rem] text-[#2D5016] leading-tight">Květiny</span>
-              <span className="font-[family-name:var(--font-great-vibes)] text-[1.1rem] text-[#8B6914] leading-tight">nad museem</span>
-            </div>
+          <div className="px-8 py-10 flex-1 overflow-y-auto">
+            <p className="eyebrow mb-8">Navigace</p>
+            <ul className="space-y-5">
+              {NAV_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="font-display text-3xl text-charcoal hover:text-emerald-deep transition-colors"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="flex flex-col gap-0 px-8 py-4 flex-1">
-            {NAV_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setIsMenuOpen(false)}
-                className="text-base font-medium text-gray-800 hover:text-[#2D5016] py-3.5 border-b border-gray-100 transition-colors"
+          <div className="px-8 py-8 border-t border-gold-champagne/30 bg-bone/40">
+            <p className="eyebrow mb-3">Atelier</p>
+            <address className="not-italic text-sm text-graphite leading-relaxed">
+              Vinohradská 6<br />
+              Praha 2, 120 00
+              <br />
+              <a
+                href="tel:+420XXXXXXXXX"
+                className="link-underline text-emerald-deep font-medium mt-2 inline-block"
               >
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="px-8 pb-8 flex flex-col gap-3">
-            <Link href="/obchod" onClick={() => setIsMenuOpen(false)}
-              className="px-5 py-3 bg-[#2D5016] text-white text-center font-semibold rounded-full hover:bg-[#3a6820] transition-colors">
-              Objednat kytici
-            </Link>
-            <Link href="/svatby" onClick={() => setIsMenuOpen(false)}
-              className="px-5 py-3 border border-[#2D5016] text-[#2D5016] text-center font-semibold rounded-full hover:bg-[#F7F5F0] transition-colors">
-              Svatební konzultace zdarma
-            </Link>
+                +420 XXX XXX XXX
+              </a>
+            </address>
           </div>
         </nav>
       </div>

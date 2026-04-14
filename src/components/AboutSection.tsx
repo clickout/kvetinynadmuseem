@@ -1,112 +1,122 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimateIn } from "@/components/AnimateIn";
+import { SectionNumber } from "@/components/SectionNumber";
+import { GoldHairline } from "@/components/GoldHairline";
 
 /**
- * AboutSection – příběh Adély, zakladatelky Květiny nad Museem.
+ * AboutSection — asymetrický layout, pull quote, bez konkrétního jména.
+ * Příběh rodinného atelieru: 15 let praxe, nyní pod vlastní značkou.
  */
 export function AboutSection() {
   return (
     <section
       aria-labelledby="about-heading"
-      className="py-16 md:py-24 bg-white overflow-hidden"
+      className="bg-bone/40 py-24 md:py-32 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-          {/* ── Obrázek prodejny ────────────────────────────── */}
-          <AnimateIn animation="fade-right" duration={800} className="order-2 lg:order-1">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          {/* ── Obrázková část (5/12) ────────────────────── */}
+          <AnimateIn
+            animation="fade-right"
+            duration={900}
+            className="lg:col-span-5 lg:sticky lg:top-28"
+          >
             <div className="relative">
-              {/* Hlavní obrázek */}
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-xl">
+              {/* Hlavní portrét atelieru */}
+              <div className="relative aspect-[4/5] overflow-hidden bg-emerald-deep/10">
                 <Image
                   src="/images/prodejna-muzeum.jpg"
-                  alt="Adéla ve svém květinářství Květiny nad Museem s výhledem na Národní muzeum"
+                  alt="Atelier Květiny nad Museem s výhledem na Národní muzeum"
                   fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover"
                 />
-                {/* Fallback gradient */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 -z-10 bg-gradient-to-br from-[#2D5016]/30 to-[#8B6914]/20"
-                />
               </div>
 
-              {/* Dekorativní rámeček */}
+              {/* Zlatý hairline rámeček */}
               <div
                 aria-hidden="true"
-                className="absolute -bottom-4 -right-4 w-2/3 h-2/3 rounded-2xl border-2 border-[#2D5016]/15 -z-10 hidden sm:block"
+                className="absolute -bottom-5 -right-5 w-3/4 h-3/4 border border-gold-champagne/60 hidden sm:block -z-10"
               />
 
-              {/* Citát – floating karta */}
-              <div className="absolute -bottom-5 left-4 sm:left-8 bg-white rounded-xl shadow-lg px-5 py-4 max-w-[260px]">
-                <p className="text-[#2D5016] text-sm font-medium leading-snug italic font-[family-name:var(--font-playfair)]">
-                  „Celý život jsem tvořila kytice pro druhé – teď je tvořím pod vlastním jménem."
-                </p>
-                <p className="text-[#8B6914] text-xs font-semibold mt-2">— Adéla, zakladatelka</p>
-              </div>
+              {/* Eyebrow popisek pod fotem */}
+              <p className="mt-6 text-xs uppercase tracking-[0.3em] text-gold-deep">
+                Vinohradská 6 · Praha 2
+              </p>
             </div>
           </AnimateIn>
 
-          {/* ── Text Adélin příběh ───────────────────────────── */}
-          <AnimateIn animation="fade-left" duration={800} delay={100} className="order-1 lg:order-2">
-            <p className="text-[#8B6914] text-sm font-semibold uppercase tracking-widest mb-4">
-              Příběh Adély
-            </p>
+          {/* ── Text (7/12) ──────────────────────────────── */}
+          <AnimateIn
+            animation="fade-left"
+            duration={900}
+            delay={100}
+            className="lg:col-span-7"
+          >
+            <SectionNumber number="03" label="Atelier" variant="dark" className="mb-8" />
+
             <h2
               id="about-heading"
-              className="font-[family-name:var(--font-playfair)] text-3xl sm:text-4xl md:text-5xl font-bold text-[#2D5016] mb-6 leading-tight"
+              className="font-display font-light text-4xl md:text-5xl lg:text-6xl text-charcoal leading-[1.08] tracking-tight mb-10"
             >
-              15 let v květinách.{" "}
-              <span className="italic text-[#8B6914]">Konečně pod svým jménem.</span>
+              Patnáct let praxe.
+              <br />
+              <span className="italic text-gold-deep">Konečně pod vlastní značkou.</span>
             </h2>
 
-            <div className="space-y-4 text-gray-700 text-base md:text-lg leading-relaxed">
+            <GoldHairline variant="solid" className="w-24 mb-10" />
+
+            <div className="space-y-6 text-graphite text-base md:text-lg leading-[1.8] max-w-2xl font-light">
               <p>
-                Jmenuji se <strong className="text-[#2D5016]">Adéla</strong> a
-                s květinami pracuji od svých dvaceti let. Patnáct let jsem
-                aranžovala, tvořila a milovala každý den v práci – ale vždy
-                v cizím ateliéru, vždy pod cizím jménem.
+                Otevíráme svůj první vlastní atelier. Za každou naší kyticí stojí
+                patnáct let praxe v pražských květinářstvích — a rozhodnutí dělat
+                věci pomaleji, s péčí, jako to patří čtvrti, kde jsme doma.
               </p>
               <p>
-                Před třemi lety jsem se odhodlala a otevřela vlastní prodejnu
-                přesně tam, kde jsem to vždy snila – na Vinohradské ulici,
-                pár kroků od Národního muzea. Dnes mi každé ráno, když
-                vyklápím výlohu, dochází, že to stálo za to.
-              </p>
-              <p>
-                Každý zákazník dostane ode mě osobní přístup. Ať přijdete
-                pro narozeninovou kytičku nebo plánujete svatbu – sedíme spolu,
-                povídáme si, a já tvořím přesně to, co cítíte.
+                Nemáme katalog. Máme sezonu, jednu ranní kávu a pět minut hovoru
+                o tom, komu kytice patří. Z toho vznikají věci, které stojí za to,
+                aby někdo nesl domů.
               </p>
             </div>
 
+            {/* Pull quote */}
+            <blockquote className="mt-14 pl-8 border-l border-gold-champagne">
+              <p className="font-display font-light italic text-2xl md:text-3xl text-emerald-deep leading-snug">
+                „Ticho před kyticí je stejně důležité jako ticho po ní."
+              </p>
+              <footer className="mt-4 text-xs uppercase tracking-[0.3em] text-gold-deep">
+                — Atelier Praha
+              </footer>
+            </blockquote>
+
             {/* Milníky */}
-            <div className="mt-8 grid grid-cols-3 gap-4">
+            <dl className="mt-14 grid grid-cols-3 gap-6 max-w-xl">
               {[
-                { value: "15+", label: "let zkušeností" },
-                { value: "3", label: "roky vlastní prodejny" },
-                { value: "1 200+", label: "spokojených zákazníků" },
+                { value: "15", label: "let praxe" },
+                { value: "2024", label: "první vlastní adresa" },
+                { value: "01", label: "atelier na Vinohradech" },
               ].map(({ value, label }) => (
-                <div key={label} className="text-center">
-                  <p className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold text-[#2D5016]">
+                <div key={label} className="border-t border-gold-champagne/50 pt-4">
+                  <dt className="font-display text-3xl md:text-4xl text-charcoal font-light">
                     {value}
-                  </p>
-                  <p className="text-gray-500 text-xs mt-1 leading-tight">{label}</p>
+                  </dt>
+                  <dd className="mt-1 text-xs uppercase tracking-[0.2em] text-gold-deep">
+                    {label}
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
 
             <Link
               href="/o-nas"
-              className="mt-8 inline-flex items-center gap-2 text-[#2D5016] font-semibold text-base hover:gap-3 transition-all duration-200 group"
+              className="mt-12 inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-emerald-deep hover:text-gold-deep transition-colors group"
             >
-              Přečíst celý příběh
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="group-hover:translate-x-0.5 transition-transform">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
+              Celý příběh atelieru
+              <span
+                aria-hidden="true"
+                className="block w-10 h-px bg-current transition-all duration-300 group-hover:w-16"
+              />
             </Link>
           </AnimateIn>
         </div>
