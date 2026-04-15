@@ -42,8 +42,7 @@ export function Header() {
   }, [isMenuOpen]);
 
   const textColor = solidHeader ? "text-charcoal" : "text-ivory";
-  const logoColor = solidHeader ? "#0B3D2E" : "#F5F1E8";
-  const subtextColor = solidHeader ? "text-gold-deep" : "text-gold-champagne";
+  const logoColor = solidHeader ? "#1A1A1A" : "#F5F1E8";
 
   return (
     <header
@@ -63,23 +62,16 @@ export function Header() {
             aria-label="Květiny nad Museem – domovská stránka"
           >
             <LogoMark
-              size={48}
+              size={32}
               color={logoColor}
               className="transition-all duration-500 flex-shrink-0"
             />
 
-            <div className="flex flex-col leading-none">
-              <span
-                className={`font-script text-[1.85rem] leading-[1.1] tracking-wide transition-colors duration-500 ${textColor}`}
-              >
-                Květiny
-              </span>
-              <span
-                className={`font-script text-[1.1rem] leading-[1.1] tracking-wide transition-colors duration-500 ${subtextColor}`}
-              >
-                nad museem
-              </span>
-            </div>
+            <span
+              className={`font-script text-[1.75rem] md:text-[2rem] leading-none tracking-wide whitespace-nowrap transition-colors duration-500 ${textColor}`}
+            >
+              Květiny nad museem
+            </span>
           </Link>
 
           {/* ── Desktop navigation ───────────────────────── */}
